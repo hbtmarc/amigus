@@ -47,6 +47,7 @@ class UIButton extends HTMLElement {
       <style>
         :host {
           display: inline-block;
+          cursor: pointer;
         }
 
         button {
@@ -59,6 +60,7 @@ class UIButton extends HTMLElement {
           border: 1px solid transparent;
           border-radius: var(--radius-full);
           cursor: pointer;
+          pointer-events: all;
           min-height: var(--target-min);
           transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
           outline: none;
@@ -168,6 +170,27 @@ class UIButton extends HTMLElement {
         <slot></slot>
       </button>
     `;
+
+    // Setup event forwarding after render
+    this.setupEventForwarding();
+  }
+
+  setupEventForwarding() {
+    // Forward click events from shadow button to host element
+    const button = this.shadowRoot.querySelector('button');
+    if (button && !button.dataset.forwardingSetup) {
+      button.dataset.forwardingSetup = 'true';
+      button.addEventListener('click', (e) => {
+        if (!this.isDisabled && !this.isLoading) {
+          // Dispatch a new click event on the host element
+          this.dispatchEvent(new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+          }));
+        }
+      });
+    }
   }
 }
 

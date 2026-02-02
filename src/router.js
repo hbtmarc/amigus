@@ -17,6 +17,8 @@ const routes = {
 
 let currentPage = null;
 let currentRoute = null;
+let retryCount = 0;
+let retryHandle = null;
 
 /**
  * Parse hash into route and query params
@@ -58,9 +60,21 @@ async function handleRoute() {
   // Mount new page
   const root = document.querySelector('#app-view');
   if (!root) {
+    if (retryCount < 10) {
+      retryCount += 1;
+      if (!retryHandle) {
+        retryHandle = requestAnimationFrame(() => {
+          retryHandle = null;
+          handleRoute();
+        });
+      }
+      return;
+    }
     console.error('App view container not found');
     return;
   }
+
+  retryCount = 0;
 
   const ctx = {
     path,
@@ -75,6 +89,9 @@ async function handleRoute() {
     await page.mount(root, ctx);
   }
 
+  // Always scroll to top after navigation
+  window.scrollTo({ top: 0, behavior: 'instant' });
+
   console.log(`📍 Navigated to ${path}`, ctx.params);
 }
 
@@ -82,6 +99,10 @@ async function handleRoute() {
  * Initialize router
  */
 export function initRouter() {
+  if (!window.location.hash || window.location.hash === '#') {
+    window.location.hash = '#/';
+  }
+
   // Handle hash changes
   window.addEventListener('hashchange', handleRoute);
   

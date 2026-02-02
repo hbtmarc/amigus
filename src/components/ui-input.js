@@ -33,8 +33,20 @@ class UIInput extends HTMLElement {
 
   attachListeners() {
     const input = this.shadowRoot.querySelector('input');
+    
     input?.addEventListener('input', (e) => {
       this.dispatchEvent(new CustomEvent('change', { detail: e.target.value }));
+    });
+    
+    // Forward keypress events
+    input?.addEventListener('keypress', (e) => {
+      this.dispatchEvent(new KeyboardEvent('keypress', {
+        key: e.key,
+        code: e.code,
+        bubbles: true,
+        cancelable: true,
+        composed: true
+      }));
     });
   }
 

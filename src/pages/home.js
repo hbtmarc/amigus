@@ -2,17 +2,27 @@
  * Home Page — Hub de temas
  */
 
-import { getState } from '../state/store.js';
+import { getState, subscribe } from '../state/store.js';
 import { seedThemes, hasThemes } from '../services/firebase/repos/themesRepo.js';
 import { getAllThemes } from '../data/themes.js';
 import { initRevealAnimations, cleanupRevealAnimations } from '../utils/reveal.js';
 
 let revealObserver = null;
+let unsubscribe = null;
 
 export async function mount(root, ctx) {
+  if (unsubscribe) {
+    unsubscribe();
+  }
+
+  renderHome(root);
+  unsubscribe = subscribe(() => renderHome(root));
+}
+
+function renderHome(root) {
   const state = getState();
-  const themes = state.data.themes;
-  const participants = state.data.participants;
+  const themes = state.data.themes || [];
+  const participants = state.data.participants || [];
   const { isAdmin } = state.auth;
   const { editorMode } = state.ui;
 
@@ -22,24 +32,16 @@ export async function mount(root, ctx) {
       <section class="hero">
         <div class="container">
           <p class="hero__tagline reveal">Noites temáticas</p>
-          <h1 class="hero__title reveal">NOITE</h1>
+          <div class="hero__icon reveal">🌙</div>
+          <h1 class="hero__title reveal">AMIGUS</h1>
           <p class="hero__subtitle reveal">
-            Noites temáticas para 4 pessoas (2 casais). Escolha um tema e transforme o encontro em uma experiência memorável.
+            Noites temáticas entre amigos. Escolha um tema e transforme o encontro em uma experiência memorável.
           </p>
           <div class="hero__ctas reveal">
             <ui-button variant="primary" size="lg" id="cta-start">Começar</ui-button>
             <ui-button variant="secondary" size="lg" id="cta-themes">Ver temas</ui-button>
           </div>
-          <div class="hero__chips reveal">
-            ${participants.map(name => `
-              <ui-chip variant="outline" size="md">${name}</ui-chip>
-            `).join('')}
-            ${editorMode && isAdmin ? `
-              <ui-button variant="ghost" size="sm" id="edit-participants-btn">
-                ✏️ Editar
-              </ui-button>
-            ` : ''}
-          </div>
+          <div class="hero__chips reveal"></div>
         </div>
       </section>
 
@@ -121,6 +123,20 @@ export async function mount(root, ctx) {
               }).join('')}
             </div>
           `}
+
+          ${themes.length > 0 ? `
+            <div class="theme-randomizer reveal" style="margin-top: var(--space-16);">
+              <div class="draw-box">
+                <div class="draw-icon">🤔</div>
+                <h3 class="draw-title">Não sabe o que escolher?</h3>
+                <p class="draw-subtitle">Deixe a sorte decidir qual será o próximo tema!</p>
+                <ui-button variant="primary" size="lg" id="random-theme-btn" onclick="window.drawRandomTheme && window.drawRandomTheme()" style="min-width: 240px; cursor: pointer;">
+                  🎲 Sortear Tema
+                </ui-button>
+                <div id="random-theme-result" class="draw-result"></div>
+              </div>
+            </div>
+          ` : ''}
         </div>
       </section>
 
@@ -133,32 +149,23 @@ export async function mount(root, ctx) {
           </div>
           <div class="how-it-works__steps">
             <div class="step reveal">
+              <div class="step__icon">🎯</div>
               <div class="step__number">1</div>
               <h3 class="step__title">Escolha o tema</h3>
               <p class="step__description">Navegue pelos temas e escolha o que mais combina com o momento.</p>
             </div>
             <div class="step reveal">
+              <div class="step__icon">📦</div>
               <div class="step__number">2</div>
               <h3 class="step__title">Prepare</h3>
               <p class="step__description">Organize materiais e alinhe o roteiro com o grupo.</p>
             </div>
             <div class="step reveal">
+              <div class="step__icon">🎉</div>
               <div class="step__number">3</div>
               <h3 class="step__title">Execute o deck</h3>
               <p class="step__description">Use o modo apresentação para guiar a noite do início ao fim.</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Participants -->
-      <section class="participants">
-        <div class="container-narrow">
-          <h3 class="participants__title reveal">Quem participa</h3>
-          <div class="participants__list reveal">
-            ${participants.map(name => `
-              <div class="participant-chip">${name}</div>
-            `).join('')}
           </div>
         </div>
       </section>
@@ -170,7 +177,7 @@ export async function mount(root, ctx) {
             <a href="#temas" class="footer__link">Temas</a>
             <a href="#como-funciona" class="footer__link">Como funciona</a>
           </nav>
-          <p class="footer__copyright">© 2026 NOITE — Todos os direitos reservados</p>
+          <p class="footer__copyright">© 2026 AMIGUS — Todos os direitos reservados</p>
         </div>
       </footer>
     </div>
@@ -180,6 +187,9 @@ export async function mount(root, ctx) {
   attachHomeListeners();
 
   // Reveal animations
+  if (revealObserver) {
+    cleanupRevealAnimations(revealObserver);
+  }
   revealObserver = initRevealAnimations(root);
 }
 
@@ -187,6 +197,10 @@ export async function unmount() {
   if (revealObserver) {
     cleanupRevealAnimations(revealObserver);
     revealObserver = null;
+  }
+  if (unsubscribe) {
+    unsubscribe();
+    unsubscribe = null;
   }
 }
 
@@ -202,16 +216,61 @@ function attachHomeListeners() {
     document.getElementById('temas')?.scrollIntoView({ behavior: 'smooth' });
   });
 
+  // Random theme selector
+  const randomThemeBtn = document.getElementById('random-theme-btn');
+  const randomThemeResult = document.getElementById('random-theme-result');
+  
+  const handleRandomTheme = () => {
+    console.log('Random theme button clicked!');
+    const themes = state.data.themes || [];
+    console.log('Available themes:', themes.length);
+    if (themes.length === 0) {
+      if (randomThemeResult) {
+        randomThemeResult.className = 'draw-result draw-result--error';
+        randomThemeResult.innerHTML = '⚠️ Nenhum tema disponível.';
+      }
+      return;
+    }
+    
+    // Animação de sorteio
+    if (randomThemeResult) {
+      randomThemeResult.className = 'draw-result draw-result--loading';
+      randomThemeResult.innerHTML = '🎲 Sorteando...';
+    }
+    
+    setTimeout(() => {
+      const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+      
+      if (randomThemeResult) {
+        randomThemeResult.className = 'draw-result draw-result--success';
+        randomThemeResult.innerHTML = `
+          <div class="draw-winner" style="flex-direction: column; gap: var(--space-4);">
+            <div class="flex items-center gap-3">
+              <span class="draw-winner__icon">🎉</span>
+              <div>
+                <div class="draw-winner__label">Tema Sorteado</div>
+                <div class="draw-winner__name">${randomTheme.title}</div>
+              </div>
+            </div>
+            <a class="theme-details-button" href="#/t?id=${randomTheme.id}">
+              Ver Detalhes →
+            </a>
+          </div>
+        `;
+      }
+    }, 1200);
+  };
+  
+  // Expose to window for inline onclick
+  window.drawRandomTheme = handleRandomTheme;
+  
+  randomThemeBtn?.addEventListener('click', handleRandomTheme);
+
   if (!isAdmin) return;
 
   // Publish seed button
   document.getElementById('publish-seed-btn')?.addEventListener('click', handlePublishSeed);
   document.getElementById('publish-seed-inline-btn')?.addEventListener('click', handlePublishSeed);
-
-  // Edit participants
-  document.getElementById('edit-participants-btn')?.addEventListener('click', () => {
-    alert('Edição de participantes será implementada em breve');
-  });
 
   // Create theme
   document.getElementById('create-theme-btn')?.addEventListener('click', () => {

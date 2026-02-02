@@ -12,6 +12,8 @@ let touchStartX = 0;
 let touchEndX = 0;
 
 export async function mount(root, ctx) {
+  document.body.classList.add('deck-mode');
+
   const themeId = ctx.params.id;
   const state = getState();
   theme = state.data.themes.find(t => t.id === themeId);
@@ -72,6 +74,8 @@ export async function unmount() {
     document.removeEventListener('keydown', keyHandler);
     keyHandler = null;
   }
+
+  document.body.classList.remove('deck-mode');
 }
 
 function generateSlides(theme) {
@@ -90,6 +94,7 @@ function generateSlides(theme) {
   generatedSlides.push({
     type: 'objective',
     content: {
+      icon: '💡',
       title: 'Objetivo',
       text: theme.pitch,
       tags: theme.vibeTags,
@@ -101,6 +106,7 @@ function generateSlides(theme) {
   generatedSlides.push({
     type: 'materials',
     content: {
+      icon: '📦',
       title: 'Materiais Necessários',
       items: theme.materials,
     }
@@ -110,6 +116,7 @@ function generateSlides(theme) {
   generatedSlides.push({
     type: 'rules',
     content: {
+      icon: '⚖️',
       title: 'Regras',
       items: theme.rules,
     }
@@ -121,6 +128,7 @@ function generateSlides(theme) {
     generatedSlides.push({
       type: 'steps',
       content: {
+        icon: '📋',
         title: stepChunks.length > 1 ? `Roteiro (${i + 1}/${stepChunks.length})` : 'Roteiro',
         items: chunk,
       }
@@ -134,6 +142,7 @@ function generateSlides(theme) {
       generatedSlides.push({
         type: 'prompts',
         content: {
+          icon: '💬',
           title: promptChunks.length > 1 ? `Perguntas (${i + 1}/${promptChunks.length})` : 'Perguntas',
           items: chunk,
         }
@@ -145,6 +154,7 @@ function generateSlides(theme) {
   generatedSlides.push({
     type: 'closing',
     content: {
+      icon: '🎉',
       title: 'Boa Noite!',
       text: 'Aproveitem o momento juntos',
     }
@@ -177,7 +187,7 @@ function renderSlide() {
       break;
 
     case 'objective':
-      title = slide.content.title;
+      title = `${slide.content.icon} ${slide.content.title}`;
       content = `
         <div class="deck-card__content">
           <p class="mb-6">${slide.content.text}</p>
@@ -190,10 +200,10 @@ function renderSlide() {
       break;
 
     case 'materials':
-      title = slide.content.title;
+      title = `${slide.content.icon} ${slide.content.title}`;
       content = `
         <div class="deck-card__content">
-          <ul class="product-list">
+          <ul class="deck-list">
             ${slide.content.items.map(item => `<li>${item}</li>`).join('')}
           </ul>
         </div>
@@ -201,10 +211,10 @@ function renderSlide() {
       break;
 
     case 'rules':
-      title = slide.content.title;
+      title = `${slide.content.icon} ${slide.content.title}`;
       content = `
         <div class="deck-card__content">
-          <ul class="product-list">
+          <ul class="deck-list">
             ${slide.content.items.map(rule => `<li>${rule}</li>`).join('')}
           </ul>
         </div>
@@ -212,10 +222,10 @@ function renderSlide() {
       break;
 
     case 'steps':
-      title = slide.content.title;
+      title = `${slide.content.icon} ${slide.content.title}`;
       content = `
         <div class="deck-card__content">
-          <ul class="product-list">
+          <ul class="deck-list">
             ${slide.content.items.map(step => `<li>${step}</li>`).join('')}
           </ul>
         </div>
@@ -223,20 +233,22 @@ function renderSlide() {
       break;
 
     case 'prompts':
-      title = slide.content.title;
+      title = `${slide.content.icon} ${slide.content.title}`;
       content = `
-        <div class="deck-card__content grid-auto-fit">
-          ${slide.content.items.map(prompt => `
-            <div class="card" style="padding: var(--space-6); text-align: center;">
-              <p class="text-secondary">${prompt}</p>
-            </div>
-          `).join('')}
+        <div class="deck-card__content">
+          <div class="deck-prompts-grid">
+            ${slide.content.items.map(prompt => `
+              <div class="deck-prompt-item">
+                <p>${prompt}</p>
+              </div>
+            `).join('')}
+          </div>
         </div>
       `;
       break;
 
     case 'closing':
-      title = slide.content.title;
+      title = `${slide.content.icon} ${slide.content.title}`;
       content = `
         <div class="deck-card__content">
           <p class="mb-6 text-secondary">${slide.content.text}</p>

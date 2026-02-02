@@ -9,11 +9,17 @@ class AppShell extends HTMLElement {
   constructor() {
     super();
     this.unsubscribe = null;
+    this.mounted = false;
     this.handleScroll = this.handleScroll.bind(this);
   }
 
   connectedCallback() {
-    this.render();
+    if (!this.mounted) {
+      this.renderShell();
+      this.mounted = true;
+    }
+
+    this.renderHeader();
     this.attachListeners();
 
     window.addEventListener('scroll', this.handleScroll, { passive: true });
@@ -21,7 +27,7 @@ class AppShell extends HTMLElement {
     
     // Subscribe to state changes
     this.unsubscribe = subscribe(() => {
-      this.render();
+      this.renderHeader();
       this.attachListeners();
     });
   }
@@ -44,11 +50,7 @@ class AppShell extends HTMLElement {
     }
   }
 
-  render() {
-    const state = getState();
-    const { auth, ui } = state;
-    const { user, isAdmin } = auth;
-
+  renderShell() {
     this.innerHTML = `
       <div class="app-shell">
         <style>
@@ -141,44 +143,9 @@ class AppShell extends HTMLElement {
 
         <header class="app-header">
           <div class="header-content">
-            <a href="#/" class="header-logo">NOITE</a>
+            <a href="#/" class="header-logo">AMIGUS</a>
             
-            <nav class="header-nav">
-              <a href="#/" class="header-link" data-scroll="temas">Temas</a>
-              <a href="#/" class="header-link" data-scroll="como-funciona">Como funciona</a>
-              
-              ${user ? `
-                ${isAdmin ? `
-                  <ui-button 
-                    variant="${ui.editorMode ? 'primary' : 'ghost'}" 
-                    size="sm" 
-                    id="toggle-editor"
-                  >
-                    ${ui.editorMode ? '✓ Editor' : 'Editar'}
-                  </ui-button>
-                ` : ''}
-                
-                <div class="header-user">
-                  ${user.photoURL ? `
-                    <img 
-                      src="${user.photoURL}" 
-                      alt="${user.displayName}"
-                      class="header-avatar"
-                    />
-                  ` : ''}
-                  <span class="header-user-name">
-                    ${user.displayName?.split(' ')[0] || 'User'}
-                  </span>
-                  <ui-button variant="ghost" size="sm" id="logout-btn">
-                    Sair
-                  </ui-button>
-                </div>
-              ` : `
-                <ui-button variant="primary" size="sm" id="login-btn">
-                  Entrar
-                </ui-button>
-              `}
-            </nav>
+            <nav class="header-nav" id="header-nav"></nav>
           </div>
         </header>
         
@@ -204,6 +171,52 @@ class AppShell extends HTMLElement {
           </ui-button>
         </div>
       </ui-modal>
+    `;
+  }
+
+  renderHeader() {
+    const state = getState();
+    const { auth, ui } = state;
+    const { user, isAdmin } = auth;
+
+    const nav = this.querySelector('#header-nav');
+    if (!nav) return;
+
+    nav.innerHTML = `
+      <a href="#/" class="header-link" data-scroll="temas">Temas</a>
+      <a href="#/" class="header-link" data-scroll="como-funciona">Como funciona</a>
+      
+      ${user ? `
+        ${isAdmin ? `
+          <ui-button 
+            variant="${ui.editorMode ? 'primary' : 'ghost'}" 
+            size="sm" 
+            id="toggle-editor"
+          >
+            ${ui.editorMode ? '✓ Editor' : 'Editar'}
+          </ui-button>
+        ` : ''}
+        
+        <div class="header-user">
+          ${user.photoURL ? `
+            <img 
+              src="${user.photoURL}" 
+              alt="${user.displayName}"
+              class="header-avatar"
+            />
+          ` : ''}
+          <span class="header-user-name">
+            ${user.displayName?.split(' ')[0] || 'User'}
+          </span>
+          <ui-button variant="ghost" size="sm" id="logout-btn">
+            Sair
+          </ui-button>
+        </div>
+      ` : `
+        <ui-button variant="primary" size="sm" id="login-btn">
+          Entrar
+        </ui-button>
+      `}
     `;
   }
 
