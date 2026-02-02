@@ -59,10 +59,10 @@
 
 .hero__ctas {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-3);
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--space-6);
 }
 
 .hero__chips {
@@ -102,10 +102,10 @@
 }
 
 .themes-grid__title {
-  font-size: var(--text-4xl);
+  font-size: var(--text-3xl);
   font-weight: var(--font-bold);
   letter-spacing: var(--tracking-tight);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .themes-grid__subtitle {
