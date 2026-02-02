@@ -1,0 +1,497 @@
+/**
+ * Sections — NOITE Landing Page (Apple-inspired)
+ * Hero, Themes Grid, How It Works, Participants, Footer
+ */
+
+/* ==================
+   HERO SECTION (Apple-style)
+   ================== */
+
+.hero {
+  text-align: center;
+  padding: var(--space-32) 0 var(--space-24);
+  background: var(--color-bg);
+}
+
+.hero__tagline {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+  font-weight: var(--font-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.hero__title {
+  font-size: var(--text-hero);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  margin-bottom: var(--space-6);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero__subtitle {
+  font-size: var(--text-xl);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero__ctas {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-8);
+}
+
+.hero__chips {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: var(--space-12);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: var(--space-20) 0 var(--space-16);
+  }
+  
+  .hero__ctas {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ==================
+   THEMES GRID (Apple product grid style)
+   ================== */
+
+.themes-grid {
+  padding: var(--space-24) 0;
+  background: var(--color-bg);
+}
+
+.themes-grid__header {
+  text-align: center;
+  margin-bottom: var(--space-12);
+}
+
+.themes-grid__title {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: var(--space-4);
+}
+
+.themes-grid__subtitle {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.themes-grid__container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-12);
+}
+
+/* Theme Card (Apple product card style) */
+.theme-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-light);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.theme-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.theme-card__badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--space-4);
+  align-self: flex-start;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.theme-card__title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-2);
+  color: var(--color-text);
+}
+
+.theme-card__subtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+  line-height: var(--leading-relaxed);
+}
+
+.theme-card__meta {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.theme-card__tags {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+
+.theme-card__footer {
+  margin-top: auto;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-divider);
+}
+
+@media (max-width: 768px) {
+  .themes-grid__container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==================
+   HOW IT WORKS (Apple feature tiles)
+   ================== */
+
+.how-it-works {
+  padding: var(--space-24) 0;
+  background: var(--color-bg-secondary);
+}
+
+.how-it-works__header {
+  text-align: center;
+  margin-bottom: var(--space-16);
+}
+
+.how-it-works__title {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: var(--space-4);
+}
+
+.how-it-works__subtitle {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+}
+
+.how-it-works__steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-8);
+}
+
+.step {
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.step__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: var(--color-accent);
+  color: white;
+  border-radius: 50%;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  margin: 0 auto var(--space-6);
+}
+
+.step__title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--space-3);
+}
+
+.step__description {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+@media (max-width: 768px) {
+  .how-it-works__steps {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}
+
+/* ==================
+   PARTICIPANTS SECTION
+   ================== */
+
+.participants {
+  padding: var(--space-20) 0;
+  background: var(--color-bg);
+  text-align: center;
+}
+
+.participants__title {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-6);
+}
+
+.participants__list {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.participant-chip {
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.participant-chip:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+/* ==================
+   FOOTER (Apple minimal footer)
+   ================== */
+
+.footer {
+  padding: var(--space-16) 0;
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-divider);
+}
+
+.footer__content {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.footer__nav {
+  display: flex;
+  gap: var(--space-8);
+  justify-content: center;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.footer__link {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  transition: color var(--transition-fast);
+}
+
+.footer__link:hover {
+  color: var(--color-text);
+}
+
+.footer__copyright {
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 768px) {
+  .footer__nav {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+}
+
+/* ==================
+   PRODUCT PAGE (Theme Detail)
+   ================== */
+
+.product-hero {
+  padding: var(--space-20) 0 var(--space-12);
+  text-align: center;
+  background: var(--color-bg);
+}
+
+.product-hero__title {
+  font-size: var(--text-5xl);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: var(--space-4);
+}
+
+.product-hero__subtitle {
+  font-size: var(--text-xl);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+.product-hero__meta {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-8);
+}
+
+.product-section {
+  padding: var(--space-12) 0;
+}
+
+.product-section:nth-child(even) {
+  background: var(--color-bg-secondary);
+}
+
+.product-section__title {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+.product-section__content {
+  max-width: var(--container-narrow);
+  margin: 0 auto;
+}
+
+.product-list {
+  list-style: none;
+  padding: 0;
+}
+
+.product-list li {
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+}
+
+.product-list li::before {
+  content: "•";
+  color: var(--color-accent);
+  font-weight: var(--font-bold);
+  display: inline-block;
+  width: 1em;
+  margin-right: var(--space-2);
+}
+
+/* ==================
+   DECK PAGE (Full Focus)
+   ================== */
+
+.deck-container {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding: var(--space-6);
+}
+
+.deck-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-8);
+}
+
+.deck-progress {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-medium);
+}
+
+.deck-card {
+  max-width: 800px;
+  margin: 0 auto var(--space-8);
+  background: var(--color-surface);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-12);
+  box-shadow: var(--shadow-lg);
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.deck-card__title {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-6);
+}
+
+.deck-card__content {
+  font-size: var(--text-xl);
+  line-height: var(--leading-loose);
+  color: var(--color-text-secondary);
+}
+
+.deck-controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.deck-controls ui-button {
+  min-width: var(--target-min);
+  min-height: var(--target-min);
+}
+
+@media (max-width: 768px) {
+  .deck-container {
+    padding: var(--space-4);
+  }
+  
+  .deck-card {
+    padding: var(--space-8);
+    min-height: 300px;
+  }
+  
+  .deck-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .deck-controls ui-button {
+    width: 100%;
+  }
+}
